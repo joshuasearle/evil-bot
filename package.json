@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/joshuasearle/evil-bot/issues"
   },
-  "homepage": "https://github.com/joshuasearle/evil-bot#readme"
+  "homepage": "https://github.com/joshuasearle/evil-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^8.2.0"
+  }
 }
