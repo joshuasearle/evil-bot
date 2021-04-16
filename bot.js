@@ -14,17 +14,25 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
-client.on('message', (message) => {
+client.on('message', async (message) => {
   if (message.content != TRIGGER_MESSAGE) return;
-  axios
-    .get(API_LINK)
-    .then((res) => {
-      const insult = res.data;
-      message.reply(insult);
-    })
-    .catch((err) => {
-      message.reply('Network error');
-    });
+  try {
+    const res = await axios.get(API_LINK);
+    const insult = res.data;
+    message.reply(insult);
+  } catch (e) {
+    message.reply('Network error');
+  }
+
+  // axios
+  //   .get(API_LINK)
+  //   .then((res) => {
+  //     const insult = res.data;
+  //     message.reply(insult);
+  //   })
+  //   .catch((err) => {
+  //     message.reply('Network error');
+  //   });
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
