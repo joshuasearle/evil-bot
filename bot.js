@@ -23,16 +23,6 @@ client.on('message', async (message) => {
   } catch (e) {
     message.reply('Network error');
   }
-
-  // axios
-  //   .get(API_LINK)
-  //   .then((res) => {
-  //     const insult = res.data;
-  //     message.reply(insult);
-  //   })
-  //   .catch((err) => {
-  //     message.reply('Network error');
-  //   });
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
