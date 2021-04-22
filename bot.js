@@ -42,6 +42,27 @@ const sendTamper = (message, tamperMessage) => {
   }, lastMillseconds);
 };
 
+const subStringInString = (subString, string) => {
+  if (subString.length > string.length) return false;
+
+  let currentSubStringCharIndex = 0;
+  let currentStringIndex = 0;
+
+  // While still chars in string, and full substring hasn't matched
+  while (
+    currentStringIndex < string.length &&
+    currentSubStringCharIndex !== subString.length
+  ) {
+    if (string[currentStringIndex] === subString[currentSubStringCharIndex]) {
+      currentSubStringCharIndex += 1;
+    }
+    currentStringIndex += 1;
+  }
+
+  const match = currentSubStringCharIndex === subString.length;
+  return [match, currentStringIndex];
+};
+
 const checkMessage = (message, trigger) => {
   const messageLower = message.toLowerCase();
   const triggerLower = trigger.toLowerCase();
@@ -75,27 +96,6 @@ const checkMessage = (message, trigger) => {
 
   if (messageLower.length > 10 * trigger.length) return [match, false];
   return [match, tampered];
-};
-
-const subStringInString = (subString, string) => {
-  if (subString.length > string.length) return false;
-
-  let currentSubStringCharIndex = 0;
-  let currentStringIndex = 0;
-
-  // While still chars in string, and full substring hasn't matched
-  while (
-    currentStringIndex < string.length &&
-    currentSubStringCharIndex !== subString.length
-  ) {
-    if (string[currentStringIndex] === subString[currentSubStringCharIndex]) {
-      currentSubStringCharIndex += 1;
-    }
-    currentStringIndex += 1;
-  }
-
-  const match = currentSubStringCharIndex === subString.length;
-  return [match, currentStringIndex];
 };
 
 client.on('message', async (message) => {
