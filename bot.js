@@ -58,10 +58,30 @@ const checkMessage = (message, trigger) => {
   const tampered =
     !match &&
     triggerWords.reduce((tampredSoFar, triggerWord) => {
-      return tampredSoFar && messageLower.includes(triggerWord);
+      return tampredSoFar && subStringInString(triggerWord, messageLower);
     }, true);
 
   return [match, tampered];
+};
+
+const subStringInString = (subString, string) => {
+  if (subString.length > string.length) return false;
+
+  let currentSubStringCharIndex = 0;
+  let currentStringIndex = 0;
+
+  // While still chars in string, and full substring hasn't matched
+  while (
+    currentStringIndex < string.length &&
+    currentSubStringCharIndex != subString.length - 1
+  ) {
+    if (string[currentStringIndex] === subString[currentStringIndex])
+      currentSubStringCharIndex += 1;
+    currentStringIndex += 1;
+  }
+
+  const match = currentStringIndex === subString.length - 1;
+  return match;
 };
 
 client.on('message', async (message) => {
