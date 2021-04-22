@@ -5,64 +5,72 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const client = new discord.Client();
-const TAMPER_MESSAGE = 'TAMPER ATTEMPT DETECTED. PLEASE STOP IMMEDIATELY';
-const TRIGGER_MESSAGE = 'oi mate';
+const TRIGGER_WORD = 'oi mate';
+const TAMPER_MESSAGE = `\`\`\`css
+####################################################
+# TAMPER ATTEMPT DETECTED. PLEASE STOP IMMEDIATELY #
+####################################################
+\`\`\``;
 
 const API_LINK =
   'https://evilinsult.com/generate_insult.php?lang=en&amp;type=json';
-
-const allowedChars = [
-  'a',
-  'b',
-  'c',
-  'd',
-  'e',
-  'f',
-  'g',
-  'h',
-  'i',
-  'j',
-  'k',
-  'l',
-  'm',
-  'n',
-  'o',
-  'p',
-  'q',
-  'r',
-  's',
-  't',
-  'u',
-  'v',
-  'w',
-  'x',
-  'y',
-  'z',
-  ' ',
-];
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
-const startsWith = (text, prefix) => {
-  return prefix.split('').reduce((sameSoFar, char, i) => {
-    return sameSoFar && char.toLowerCase() === text[i].toLowerCase();
-  });
+const sendTamper = (message, tamperMessage) => {
+  message.channel.send(tamperMessage);
+  message.channel.send(tamperMessage);
+  message.channel.send(tamperMessage);
+  message.channel.send('Discord bot will self destruct in');
+  const n = 5;
+  for (let i = n; i >= 2; i--) {
+    const millseconds = (n - i) * 5000;
+    setTimeout(() => {
+      message.channel.send(String(i));
+    }, millseconds);
+  }
+  const secondLastMillseconds = (n - 1) * 5000;
+  setTimeout(() => {
+    message.channel.send('Network error');
+  }, secondLastMillseconds);
+
+  const lastMillseconds = n * 5000;
+  setTimeout(() => {
+    message.reply('Nice space btw');
+  }, lastMillseconds);
 };
 
-const removeInvisibleChars = (text) => {
-  const textArray = text.split('');
-  const filterAllowed = textArray.filter((c) =>
-    allowedChars.some((a) => a === c)
-  );
-  return filterAllowed.join('');
+const checkMessage = (message, trigger) => {
+  const messageLower = message.toLowerCase();
+  const triggerLower = trigger.toLowerCase();
+
+  // If all chars in message match, set match to true
+  const match = triggerLower.split('').reduce((matchSoFar, triggerChar, i) => {
+    return matchSoFar && triggerChar === messageLower[i];
+  });
+
+  // Extract list of words that are contained in the trigger word
+  const triggerWords = triggerLower.split(' ');
+
+  // If the message contains all of the words, and not a match, set tampered to true
+  const tampered =
+    !match &&
+    triggerWords.reduce((tampredSoFar, triggerWord) => {
+      return tampredSoFar && messageLower.includes(triggerWord);
+    }, true);
+
+  return [match, tampered];
 };
 
 client.on('message', async (message) => {
   try {
-    const strippedChars = removeInvisibleChars(message.content.toLowerCase());
-    if (!startsWith(strippedChars, TRIGGER_MESSAGE)) return;
+    const [match, tampered] = checkMessage(message.content, TRIGGER_WORD);
+    // Guards
+    if (!match && !tampered) return;
+    if (!match && tampered) return sendTamper(message, TAMPER_MESSAGE);
+
     const res = await axios.get(API_LINK);
     const insult = res.data;
     message.reply(insult);
