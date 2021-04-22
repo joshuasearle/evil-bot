@@ -14,8 +14,18 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
+const startsWith = (text, prefix) => {
+  const n = prefix.length;
+  const lowerText = text.toLowerCase();
+  const lowerPrefix = prefix.toLowerCase();
+  for (let i = 0; i < n; i++) {
+    if (lowerPrefix[i] != lowerText[i]) return false;
+  }
+  return true;
+};
+
 client.on('message', async (message) => {
-  if (message.content != TRIGGER_MESSAGE) return;
+  if (!startsWith(message.content, TRIGGER_MESSAGE)) return;
   try {
     const res = await axios.get(API_LINK);
     const insult = res.data;
