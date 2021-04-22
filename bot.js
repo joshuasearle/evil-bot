@@ -21,7 +21,8 @@ const startsWith = (text, prefix) => {
 };
 
 client.on('message', async (message) => {
-  if (!startsWith(message.content, TRIGGER_MESSAGE)) return;
+  const strippedChars = message.content.replace(/[^\x00-\x7F]/g, '');
+  if (!startsWith(strippedChars, TRIGGER_MESSAGE)) return;
   try {
     const res = await axios.get(API_LINK);
     const insult = res.data;
