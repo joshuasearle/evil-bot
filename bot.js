@@ -43,7 +43,7 @@ const sendTamper = (message, tamperMessage) => {
 };
 
 const subStringInString = (subString, string) => {
-  if (subString.length > string.length) return false;
+  if (subString.length > string.length) return [false, -1];
 
   let currentSubStringCharIndex = 0;
   let currentStringIndex = 0;
