@@ -5,8 +5,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const client = new discord.Client();
-
+const TAMPER_MESSAGE = 'TAMPER ATTEMPT DETECTED. PLEASE STOP IMMEDIATELY';
 const TRIGGER_MESSAGE = 'oi mate';
+
 const API_LINK =
   'https://evilinsult.com/generate_insult.php?lang=en&amp;type=json';
 
@@ -50,30 +51,33 @@ const startsWith = (text, prefix) => {
   });
 };
 
+// 'oink,'
+
 const removeInvisibleChars = (text) => {
   const textArray = text.split('');
   const filterAllowed = textArray.filter((c) =>
     allowedChars.some((a) => a === c)
   );
-  const notAllowed = textArray.length === filterAllowed.length;
+  const notAllowed = textArray.length != filterAllowed.length;
   return [filterAllowed.join(''), notAllowed];
 };
 
 client.on('message', async (message) => {
   try {
+    const startsWithOi = startsWith(message.content, 'oi');
+    if (!startsWithOi) return;
     const [strippedChars, tampered] = removeInvisibleChars(
       message.content.toLowerCase()
     );
     if (!startsWith(strippedChars, TRIGGER_MESSAGE)) {
-      if (tampered) {
-        message.reply('Nice space');
-      }
+      if (tampered) message.reply(TAMPER_MESSAGE);
       return;
     }
     const res = await axios.get(API_LINK);
     const insult = res.data;
     message.reply(insult);
   } catch (e) {
+    console.log(e);
     message.reply('Network error');
   }
 });
