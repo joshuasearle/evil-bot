@@ -51,8 +51,6 @@ const startsWith = (text, prefix) => {
   });
 };
 
-// 'oink,'
-
 const removeInvisibleChars = (text) => {
   const textArray = text.split('');
   const filterAllowed = textArray.filter((c) =>
