@@ -56,13 +56,14 @@ const removeInvisibleChars = (text) => {
     allowedChars.some((a) => a === c)
   );
   const notAllowed = textArray.length === filterAllowed.length;
-  return filterAllowed.join(''), notAllowed;
+  return [filterAllowed.join(''), notAllowed];
 };
 
 client.on('message', async (message) => {
   try {
-    const strippedChars,
-      tampered = removeInvisibleChars(message.content.toLowerCase());
+    const [strippedChars, tampered] = removeInvisibleChars(
+      message.content.toLowerCase()
+    );
     if (!startsWith(strippedChars, TRIGGER_MESSAGE)) {
       if (tampered) {
         message.reply('Nice space');
