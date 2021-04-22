@@ -46,18 +46,26 @@ client.on('ready', () => {
 });
 
 const startsWith = (text, prefix) => {
-  return prefix.split('').reduce((sameSoFar, char, i) => {
-    return sameSoFar && char.toLowerCase() === text[i].toLowerCase();
-  });
+  try {
+    return prefix.split('').reduce((sameSoFar, char, i) => {
+      return sameSoFar && char.toLowerCase() === text[i].toLowerCase();
+    });
+  } catch (e) {
+    return false;
+  }
 };
 
 const removeInvisibleChars = (text) => {
-  const textArray = text.split('');
-  const filterAllowed = textArray.filter((c) =>
-    allowedChars.some((a) => a === c)
-  );
-  const notAllowed = textArray.length != filterAllowed.length;
-  return [filterAllowed.join(''), notAllowed];
+  try {
+    const textArray = text.split('');
+    const filterAllowed = textArray.filter((c) =>
+      allowedChars.some((a) => a === c)
+    );
+    const notAllowed = textArray.length != filterAllowed.length;
+    return [filterAllowed.join(''), notAllowed];
+  } catch (e) {
+    return [text, true];
+  }
 };
 
 client.on('message', async (message) => {
