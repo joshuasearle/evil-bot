@@ -15,13 +15,9 @@ client.on('ready', () => {
 });
 
 const startsWith = (text, prefix) => {
-  const n = prefix.length;
-  const lowerText = text.toLowerCase();
-  const lowerPrefix = prefix.toLowerCase();
-  for (let i = 0; i < n; i++) {
-    if (lowerPrefix[i] != lowerText[i]) return false;
-  }
-  return true;
+  return prefix.split('').reduce((sameSoFar, char, i) => {
+    return sameSoFar && char.toLowerCase() === text[i].toLowerCase();
+  });
 };
 
 client.on('message', async (message) => {
