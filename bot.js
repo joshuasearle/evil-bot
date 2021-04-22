@@ -57,11 +57,23 @@ const checkMessage = (message, trigger) => {
   // If the message contains all of the words, and not a match, set tampered to true
   const tampered =
     !match &&
-    triggerWords.reduce((tampredSoFar, triggerWord) => {
-      console.log(triggerWord, subStringInString(triggerWord, messageLower));
-      return tampredSoFar && subStringInString(triggerWord, messageLower);
-    }, true);
+    triggerWords.reduce(
+      (acc, triggerWord) => {
+        const { tamperedSoFar, prevEnd } = acc;
+        const [match, endIndex] = subStringInString(triggerWord, messageLower);
+        return {
+          tamperedSoFar:
+            tamperedSoFar &&
+            match &&
+            prevEnd < endIndex &&
+            endIndex < prevEnd + trigger.length,
+          prevEnd: endIndex,
+        };
+      },
+      { tamperedSoFar: true, prevEnd: 0 }
+    ).tamperedSoFar;
 
+  if (messageLower.length > 10 * trigger.length) return [match, false];
   return [match, tampered];
 };
 
@@ -83,7 +95,7 @@ const subStringInString = (subString, string) => {
   }
 
   const match = currentSubStringCharIndex === subString.length;
-  return match;
+  return [match, currentStringIndex];
 };
 
 client.on('message', async (message) => {
