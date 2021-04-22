@@ -52,17 +52,25 @@ const startsWith = (text, prefix) => {
 
 const removeInvisibleChars = (text) => {
   const textArray = text.split('');
-  console.log(textArray);
   const filterAllowed = textArray.filter((c) =>
     allowedChars.some((a) => a === c)
   );
-  return filterAllowed.join('');
+  const notAllowed = textArray.length === filterAllowed.length;
+  return filterAllowed.join(''), notAllowed;
 };
 
 client.on('message', async (message) => {
-  const strippedChars = removeInvisibleChars(message.content.toLowerCase());
-  if (!startsWith(strippedChars, TRIGGER_MESSAGE)) return;
   try {
+    console.log(message.content);
+    const strippedChars,
+      tampered = removeInvisibleChars(message.content.toLowerCase());
+    console.log(strippedChars);
+    if (!startsWith(strippedChars, TRIGGER_MESSAGE)) {
+      if (tampered) {
+        message.reply('Nice space');
+      }
+      return;
+    }
     const res = await axios.get(API_LINK);
     const insult = res.data;
     message.reply(insult);
