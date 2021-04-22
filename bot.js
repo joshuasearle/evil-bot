@@ -58,6 +58,7 @@ const checkMessage = (message, trigger) => {
   const tampered =
     !match &&
     triggerWords.reduce((tampredSoFar, triggerWord) => {
+      console.log(triggerWord, subStringInString(triggerWord, messageLower));
       return tampredSoFar && subStringInString(triggerWord, messageLower);
     }, true);
 
@@ -73,14 +74,15 @@ const subStringInString = (subString, string) => {
   // While still chars in string, and full substring hasn't matched
   while (
     currentStringIndex < string.length &&
-    currentSubStringCharIndex != subString.length - 1
+    currentSubStringCharIndex !== subString.length
   ) {
-    if (string[currentStringIndex] === subString[currentStringIndex])
+    if (string[currentStringIndex] === subString[currentSubStringCharIndex]) {
       currentSubStringCharIndex += 1;
+    }
     currentStringIndex += 1;
   }
 
-  const match = currentStringIndex === subString.length - 1;
+  const match = currentSubStringCharIndex === subString.length;
   return match;
 };
 
