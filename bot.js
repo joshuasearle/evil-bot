@@ -61,10 +61,8 @@ const removeInvisibleChars = (text) => {
 
 client.on('message', async (message) => {
   try {
-    console.log(message.content);
     const strippedChars,
       tampered = removeInvisibleChars(message.content.toLowerCase());
-    console.log(strippedChars);
     if (!startsWith(strippedChars, TRIGGER_MESSAGE)) {
       if (tampered) {
         message.reply('Nice space');
